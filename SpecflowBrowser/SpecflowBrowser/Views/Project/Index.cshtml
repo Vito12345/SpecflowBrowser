@@ -1,0 +1,181 @@
+﻿@model BL.Projet
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>@Model.Nom @Model.Version - SpecflowBrowser</title>
+    @System.Web.Optimization.Styles.Render("~/bundles/css")
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        @System.Web.Optimization.Scripts.Render("~/bundles/ie8")
+    <![endif]-->
+</head>
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <div>
+                    <a href="/"><span class="navbar-brand">Specflow Browser</span></a>
+                    <span class="navbar-brand-minus">=> @Model.Nom @Model.Version</span>
+                </div>
+            </div>
+            <div class="navbar-form navbar-right" role="search">
+                <a href="#" class="btn btn-default" type="button"><span class="glyphicon glyphicon-refresh"></span> Lancer un build</a>
+            </div>
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-xs-3">
+                <div id="tree" class="tree well">
+                    <ul>
+                        @{
+                            foreach (var feature in Model.Fonctionnalites.OrderBy(f => f.Nom))
+                            {
+                                <li>
+                                    @{
+                                string resultFeature = string.Empty;
+                                string badgeTitleFeature = string.Empty;
+                                string badgeGlyphiconFeature = string.Empty;
+
+                                switch (feature.TestResult)
+                                {
+                                    case "Passed":
+                                        resultFeature = "success";
+                                        badgeGlyphiconFeature = "glyphicon-ok";
+                                        badgeTitleFeature = "Test passé avec succès";
+                                        break;
+                                    case "Failed":
+                                        resultFeature = "danger";
+                                        badgeGlyphiconFeature = "glyphicon-remove";
+                                        badgeTitleFeature = "Test en échec";
+                                        break;
+                                    case "Inconclusive":
+                                        resultFeature = "warning";
+                                        badgeGlyphiconFeature = "glyphicon-warning-sign";
+                                        badgeTitleFeature = "Aucune information sur le test";
+                                        break;
+                                    case "NoTest":
+                                        resultFeature = "default";
+                                        break;
+                                }
+                                    }
+                                    <span>
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                        @if (resultFeature != "default")
+                                        {
+                                            <span class="alert-@resultFeature glyphicon @badgeGlyphiconFeature" title="@badgeTitleFeature"></span>
+                                        }
+                                        @feature.Nom
+                                    </span>
+                                    <ul>
+                                        @{
+                                foreach (var scenario in feature.Scenarios.OrderBy(f => f.Nom))
+                                {
+                                    string result = "default";
+                                    string badgeTitle = string.Empty;
+                                    string badgeGlyphicon = string.Empty;
+
+                                    if (scenario.TestInfos.Any())
+                                    {
+                                        BL.TestInfo testResult = scenario.TestInfos.First();
+                                        switch (testResult.Result)
+                                        {
+                                            case "Passed":
+                                                result = "success";
+                                                badgeGlyphicon = "glyphicon-ok";
+                                                badgeTitle = "Test passé avec succès";
+                                                break;
+                                            case "Failed":
+                                                result = "danger";
+                                                badgeGlyphicon = "glyphicon-remove";
+                                                badgeTitle = "Erreur : " + testResult.ErrorMessage;
+                                                break;
+                                            case "Inconclusive":
+                                                result = "warning";
+                                                badgeGlyphiconFeature = "glyphicon-warning-sign";
+                                                badgeTitle = "Aucune information sur le test";
+                                                break;
+                                        }
+                                    }
+
+                                    <li>
+                                        <span style="cursor: pointer" onclick="loadFeature('@feature.Id', '@scenario.Id')">
+                                            @if (result != "default")
+                                            {
+                                                <span class="alert-@result glyphicon @badgeGlyphicon" title="@badgeTitle"></span>
+                                            }
+                                            @scenario.Nom
+                                        </span>
+                                    </li>
+                                }
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </nav>
+            <div class="col-xs-9" id="divFonctionnalite">
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Détails</h4>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+    <script type="text/javascript">
+        //$('body').scrollspy({
+        //    target: '.bs-docs-sidebar',
+        //    offset: 40
+        //});
+
+        function loadFeature(featureId, scenarioId) {
+            $('#divFonctionnalite').html('<div style="text-align: center; padding-top: 50px"><img src="@Url.Content("~/Images/ajax-loader.gif")" alt="Loading" /></div>');
+            $.get("@Url.Action("DetailFonctionnalite")?featureId=" + featureId + "&scenarioId=" + scenarioId, function (data) {
+                $('#divFonctionnalite').html(data);
+                $('#divFonctionnalite [title]').tooltip();
+            });
+        }
+
+        $(function () {
+            $('.tree li:has(ul)').addClass('parent_li').find(' > span');
+            $('.tree li.parent_li').find(' > ul > li').hide();
+            $('.tree li.parent_li > span').on('click', function (e) {
+                var children = $(this).parent('li.parent_li').find(' > ul > li');
+                if (children.is(":visible")) {
+                    children.hide('fast');
+                    $(this).find(' > i').addClass('glyphicon-plus').removeClass('glyphicon-minus');
+                } else {
+                    children.show('fast');
+                    $(this).find(' > i').addClass('glyphicon-minus').removeClass('glyphicon-plus');
+                }
+                e.stopPropagation();
+            });
+        });
+
+        $(function () {
+            $('#tree span[title]').tooltip({
+                'placement': 'right'
+            });
+        });
+    </script>
+</body>
+</html>

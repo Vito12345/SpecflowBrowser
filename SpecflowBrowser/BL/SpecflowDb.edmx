@@ -1,0 +1,754 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SpecflowDb.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Etapes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Keyword" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="NativeKeyword" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DocString" Type="nvarchar(max)" />
+          <Property Name="ScenarioId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ScenarioOutlineId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Nom" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Table_Id" Type="uniqueidentifier" />
+          <Property Name="EtapeIndex" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Fonctionnalites">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Nom" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TestResult" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ProjetId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Projets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Nom" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Version" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PathToFeatures" Type="nvarchar(max)" />
+          <Property Name="PathToTestDll" Type="nvarchar(max)" />
+          <Property Name="PathToTestSettings" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Scenarios">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="FonctionnaliteId" Type="uniqueidentifier" />
+          <Property Name="Nom" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Fonctionnalite1_Id" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="TableColonnes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Valeur" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TableRowId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ColIndex" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TableRows">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TableId" Type="uniqueidentifier" />
+          <Property Name="TableHeader_Id" Type="uniqueidentifier" />
+          <Property Name="RowIndex" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tables">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tags">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TagName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ScenarioId" Type="uniqueidentifier" />
+          <Property Name="FonctionnaliteId" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="TestInfoes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Result" Type="nvarchar(max)" />
+          <Property Name="DateStart" Type="datetime" />
+          <Property Name="DateEnd" Type="datetime" />
+          <Property Name="Duree" Type="time" Precision="7" />
+          <Property Name="ConsoleOutput" Type="nvarchar(max)" />
+          <Property Name="ErrorMessage" Type="nvarchar(max)" />
+          <Property Name="ErrorStacktrace" Type="nvarchar(max)" />
+          <Property Name="Scenario_Id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_EtapeTable">
+          <End Role="Tables" Type="Self.Tables" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Etapes" Type="Self.Etapes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tables">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Etapes">
+              <PropertyRef Name="Table_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FonctionnaliteScenario">
+          <End Role="Fonctionnalites" Type="Self.Fonctionnalites" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Scenarios" Type="Self.Scenarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fonctionnalites">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Scenarios">
+              <PropertyRef Name="FonctionnaliteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FonctionnaliteScenario1">
+          <End Role="Fonctionnalites" Type="Self.Fonctionnalites" Multiplicity="0..1" />
+          <End Role="Scenarios" Type="Self.Scenarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fonctionnalites">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Scenarios">
+              <PropertyRef Name="Fonctionnalite1_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FonctionnaliteTag">
+          <End Role="Fonctionnalites" Type="Self.Fonctionnalites" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tags" Type="Self.Tags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fonctionnalites">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tags">
+              <PropertyRef Name="FonctionnaliteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProjetFonctionnalite">
+          <End Role="Projets" Type="Self.Projets" Multiplicity="1" />
+          <End Role="Fonctionnalites" Type="Self.Fonctionnalites" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projets">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Fonctionnalites">
+              <PropertyRef Name="ProjetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ScenarioEtape">
+          <End Role="Scenarios" Type="Self.Scenarios" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Etapes" Type="Self.Etapes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scenarios">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Etapes">
+              <PropertyRef Name="ScenarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ScenarioTag">
+          <End Role="Scenarios" Type="Self.Scenarios" Multiplicity="0..1" />
+          <End Role="Tags" Type="Self.Tags" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scenarios">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tags">
+              <PropertyRef Name="ScenarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ScenarioTestInfo">
+          <End Role="Scenarios" Type="Self.Scenarios" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TestInfoes" Type="Self.TestInfoes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scenarios">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TestInfoes">
+              <PropertyRef Name="Scenario_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableRowTableColonne">
+          <End Role="TableRows" Type="Self.TableRows" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TableColonnes" Type="Self.TableColonnes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableRows">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TableColonnes">
+              <PropertyRef Name="TableRowId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableTableRow">
+          <End Role="Tables" Type="Self.Tables" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TableRows" Type="Self.TableRows" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tables">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TableRows">
+              <PropertyRef Name="TableId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableTableRow1">
+          <End Role="Tables" Type="Self.Tables" Multiplicity="0..1" />
+          <End Role="TableRows" Type="Self.TableRows" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tables">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TableRows">
+              <PropertyRef Name="TableHeader_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SpecflowDbStoreContainer">
+          <EntitySet Name="Etapes" EntityType="Self.Etapes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Fonctionnalites" EntityType="Self.Fonctionnalites" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Projets" EntityType="Self.Projets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Scenarios" EntityType="Self.Scenarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableColonnes" EntityType="Self.TableColonnes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TableRows" EntityType="Self.TableRows" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tables" EntityType="Self.Tables" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tags" EntityType="Self.Tags" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TestInfoes" EntityType="Self.TestInfoes" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_EtapeTable" Association="Self.FK_EtapeTable">
+            <End Role="Tables" EntitySet="Tables" />
+            <End Role="Etapes" EntitySet="Etapes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FonctionnaliteScenario" Association="Self.FK_FonctionnaliteScenario">
+            <End Role="Fonctionnalites" EntitySet="Fonctionnalites" />
+            <End Role="Scenarios" EntitySet="Scenarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FonctionnaliteScenario1" Association="Self.FK_FonctionnaliteScenario1">
+            <End Role="Fonctionnalites" EntitySet="Fonctionnalites" />
+            <End Role="Scenarios" EntitySet="Scenarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FonctionnaliteTag" Association="Self.FK_FonctionnaliteTag">
+            <End Role="Fonctionnalites" EntitySet="Fonctionnalites" />
+            <End Role="Tags" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProjetFonctionnalite" Association="Self.FK_ProjetFonctionnalite">
+            <End Role="Projets" EntitySet="Projets" />
+            <End Role="Fonctionnalites" EntitySet="Fonctionnalites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ScenarioEtape" Association="Self.FK_ScenarioEtape">
+            <End Role="Scenarios" EntitySet="Scenarios" />
+            <End Role="Etapes" EntitySet="Etapes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ScenarioTag" Association="Self.FK_ScenarioTag">
+            <End Role="Scenarios" EntitySet="Scenarios" />
+            <End Role="Tags" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ScenarioTestInfo" Association="Self.FK_ScenarioTestInfo">
+            <End Role="Scenarios" EntitySet="Scenarios" />
+            <End Role="TestInfoes" EntitySet="TestInfoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableRowTableColonne" Association="Self.FK_TableRowTableColonne">
+            <End Role="TableRows" EntitySet="TableRows" />
+            <End Role="TableColonnes" EntitySet="TableColonnes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableTableRow" Association="Self.FK_TableTableRow">
+            <End Role="Tables" EntitySet="Tables" />
+            <End Role="TableRows" EntitySet="TableRows" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableTableRow1" Association="Self.FK_TableTableRow1">
+            <End Role="Tables" EntitySet="Tables" />
+            <End Role="TableRows" EntitySet="TableRows" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="SpecflowDb" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="SpecflowEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Etapes" EntityType="SpecflowDb.Etape" />
+          <EntitySet Name="Fonctionnalites" EntityType="SpecflowDb.Fonctionnalite" />
+          <EntitySet Name="Scenarios" EntityType="SpecflowDb.Scenario" />
+          <EntitySet Name="TableColonnes" EntityType="SpecflowDb.TableColonne" />
+          <EntitySet Name="TableRows" EntityType="SpecflowDb.TableRow" />
+          <EntitySet Name="Tables" EntityType="SpecflowDb.Table" />
+          <EntitySet Name="Tags" EntityType="SpecflowDb.Tag" />
+          <EntitySet Name="TestInfoes" EntityType="SpecflowDb.TestInfo" />
+          <AssociationSet Name="FK_EtapeTable" Association="SpecflowDb.FK_EtapeTable">
+            <End Role="Table" EntitySet="Tables" />
+            <End Role="Etape" EntitySet="Etapes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ScenarioEtape" Association="SpecflowDb.FK_ScenarioEtape">
+            <End Role="Scenario" EntitySet="Scenarios" />
+            <End Role="Etape" EntitySet="Etapes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FonctionnaliteScenario" Association="SpecflowDb.FK_FonctionnaliteScenario">
+            <End Role="Fonctionnalite" EntitySet="Fonctionnalites" />
+            <End Role="Scenario" EntitySet="Scenarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FonctionnaliteScenario1" Association="SpecflowDb.FK_FonctionnaliteScenario1">
+            <End Role="Fonctionnalite" EntitySet="Fonctionnalites" />
+            <End Role="Scenario" EntitySet="Scenarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FonctionnaliteTag" Association="SpecflowDb.FK_FonctionnaliteTag">
+            <End Role="Fonctionnalite" EntitySet="Fonctionnalites" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ScenarioTag" Association="SpecflowDb.FK_ScenarioTag">
+            <End Role="Scenario" EntitySet="Scenarios" />
+            <End Role="Tag" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ScenarioTestInfo" Association="SpecflowDb.FK_ScenarioTestInfo">
+            <End Role="Scenario" EntitySet="Scenarios" />
+            <End Role="TestInfo" EntitySet="TestInfoes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableRowTableColonne" Association="SpecflowDb.FK_TableRowTableColonne">
+            <End Role="TableRow" EntitySet="TableRows" />
+            <End Role="TableColonne" EntitySet="TableColonnes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableTableRow" Association="SpecflowDb.FK_TableTableRow">
+            <End Role="Table" EntitySet="Tables" />
+            <End Role="TableRow" EntitySet="TableRows" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TableTableRow1" Association="SpecflowDb.FK_TableTableRow1">
+            <End Role="Table" EntitySet="Tables" />
+            <End Role="TableRow" EntitySet="TableRows" />
+          </AssociationSet>
+          <EntitySet Name="Projets" EntityType="SpecflowDb.Projet" />
+          <AssociationSet Name="FK_ProjetFonctionnalite" Association="SpecflowDb.FK_ProjetFonctionnalite">
+            <End Role="Projet" EntitySet="Projets" />
+            <End Role="Fonctionnalite" EntitySet="Fonctionnalites" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Etape">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Keyword" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NativeKeyword" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DocString" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ScenarioId" Type="Guid" Nullable="false" />
+          <Property Name="ScenarioOutlineId" Type="Guid" Nullable="false" />
+          <Property Name="Nom" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Table_Id" Type="Guid" />
+          <Property Name="EtapeIndex" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Table" Relationship="SpecflowDb.FK_EtapeTable" FromRole="Etape" ToRole="Table" />
+          <NavigationProperty Name="Scenario" Relationship="SpecflowDb.FK_ScenarioEtape" FromRole="Etape" ToRole="Scenario" />
+        </EntityType>
+        <EntityType Name="Fonctionnalite">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Nom" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TestResult" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ProjetId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Scenarios" Relationship="SpecflowDb.FK_FonctionnaliteScenario" FromRole="Fonctionnalite" ToRole="Scenario" />
+          <NavigationProperty Name="ScenarioContext" Relationship="SpecflowDb.FK_FonctionnaliteScenario1" FromRole="Fonctionnalite" ToRole="Scenario" />
+          <NavigationProperty Name="Tags" Relationship="SpecflowDb.FK_FonctionnaliteTag" FromRole="Fonctionnalite" ToRole="Tag" />
+          <NavigationProperty Name="Projet" Relationship="SpecflowDb.FK_ProjetFonctionnalite" FromRole="Fonctionnalite" ToRole="Projet" />
+        </EntityType>
+        <EntityType Name="Scenario">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="FonctionnaliteId" Type="Guid" />
+          <Property Name="Nom" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Fonctionnalite1_Id" Type="Guid" />
+          <NavigationProperty Name="Etapes" Relationship="SpecflowDb.FK_ScenarioEtape" FromRole="Scenario" ToRole="Etape" />
+          <NavigationProperty Name="Fonctionnalite" Relationship="SpecflowDb.FK_FonctionnaliteScenario" FromRole="Scenario" ToRole="Fonctionnalite" />
+          <NavigationProperty Name="Fonctionnalite1" Relationship="SpecflowDb.FK_FonctionnaliteScenario1" FromRole="Scenario" ToRole="Fonctionnalite" />
+          <NavigationProperty Name="Tags" Relationship="SpecflowDb.FK_ScenarioTag" FromRole="Scenario" ToRole="Tag" />
+          <NavigationProperty Name="TestInfos" Relationship="SpecflowDb.FK_ScenarioTestInfo" FromRole="Scenario" ToRole="TestInfo" />
+        </EntityType>
+        <EntityType Name="TableColonne">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Valeur" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TableRowId" Type="Guid" Nullable="false" />
+          <Property Name="ColIndex" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TableRow" Relationship="SpecflowDb.FK_TableRowTableColonne" FromRole="TableColonne" ToRole="TableRow" />
+        </EntityType>
+        <EntityType Name="TableRow">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="TableId" Type="Guid" />
+          <Property Name="TableHeader_Id" Type="Guid" />
+          <Property Name="RowIndex" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TableColonnes" Relationship="SpecflowDb.FK_TableRowTableColonne" FromRole="TableRow" ToRole="TableColonne" />
+          <NavigationProperty Name="Table" Relationship="SpecflowDb.FK_TableTableRow" FromRole="TableRow" ToRole="Table" />
+          <NavigationProperty Name="Table1" Relationship="SpecflowDb.FK_TableTableRow1" FromRole="TableRow" ToRole="Table" />
+        </EntityType>
+        <EntityType Name="Table">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Etapes" Relationship="SpecflowDb.FK_EtapeTable" FromRole="Table" ToRole="Etape" />
+          <NavigationProperty Name="TableRows" Relationship="SpecflowDb.FK_TableTableRow" FromRole="Table" ToRole="TableRow" />
+          <NavigationProperty Name="TableHeader" Relationship="SpecflowDb.FK_TableTableRow1" FromRole="Table" ToRole="TableRow" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="TagName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ScenarioId" Type="Guid" />
+          <Property Name="FonctionnaliteId" Type="Guid" />
+          <NavigationProperty Name="Fonctionnalite" Relationship="SpecflowDb.FK_FonctionnaliteTag" FromRole="Tag" ToRole="Fonctionnalite" />
+          <NavigationProperty Name="Scenario" Relationship="SpecflowDb.FK_ScenarioTag" FromRole="Tag" ToRole="Scenario" />
+        </EntityType>
+        <EntityType Name="TestInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Result" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateStart" Type="DateTime" Precision="3" />
+          <Property Name="DateEnd" Type="DateTime" Precision="3" />
+          <Property Name="Duree" Type="Time" Precision="7" />
+          <Property Name="ConsoleOutput" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ErrorStacktrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Scenario_Id" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Scenario" Relationship="SpecflowDb.FK_ScenarioTestInfo" FromRole="TestInfo" ToRole="Scenario" />
+        </EntityType>
+        <Association Name="FK_EtapeTable">
+          <End Type="SpecflowDb.Table" Role="Table" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SpecflowDb.Etape" Role="Etape" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Table">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Etape">
+              <PropertyRef Name="Table_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ScenarioEtape">
+          <End Type="SpecflowDb.Scenario" Role="Scenario" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SpecflowDb.Etape" Role="Etape" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scenario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Etape">
+              <PropertyRef Name="ScenarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FonctionnaliteScenario">
+          <End Type="SpecflowDb.Fonctionnalite" Role="Fonctionnalite" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SpecflowDb.Scenario" Role="Scenario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fonctionnalite">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Scenario">
+              <PropertyRef Name="FonctionnaliteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FonctionnaliteScenario1">
+          <End Type="SpecflowDb.Fonctionnalite" Role="Fonctionnalite" Multiplicity="0..1" />
+          <End Type="SpecflowDb.Scenario" Role="Scenario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fonctionnalite">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Scenario">
+              <PropertyRef Name="Fonctionnalite1_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FonctionnaliteTag">
+          <End Type="SpecflowDb.Fonctionnalite" Role="Fonctionnalite" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SpecflowDb.Tag" Role="Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fonctionnalite">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tag">
+              <PropertyRef Name="FonctionnaliteId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ScenarioTag">
+          <End Type="SpecflowDb.Scenario" Role="Scenario" Multiplicity="0..1" />
+          <End Type="SpecflowDb.Tag" Role="Tag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scenario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Tag">
+              <PropertyRef Name="ScenarioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ScenarioTestInfo">
+          <End Type="SpecflowDb.Scenario" Role="Scenario" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SpecflowDb.TestInfo" Role="TestInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Scenario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TestInfo">
+              <PropertyRef Name="Scenario_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableRowTableColonne">
+          <End Type="SpecflowDb.TableRow" Role="TableRow" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SpecflowDb.TableColonne" Role="TableColonne" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TableRow">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TableColonne">
+              <PropertyRef Name="TableRowId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableTableRow">
+          <End Type="SpecflowDb.Table" Role="Table" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="SpecflowDb.TableRow" Role="TableRow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Table">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TableRow">
+              <PropertyRef Name="TableId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TableTableRow1">
+          <End Type="SpecflowDb.Table" Role="Table" Multiplicity="0..1" />
+          <End Type="SpecflowDb.TableRow" Role="TableRow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Table">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TableRow">
+              <PropertyRef Name="TableHeader_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Projet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Nom" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Version" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PathToFeatures" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PathToTestDll" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PathToTestSettings" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Fonctionnalites" Relationship="SpecflowDb.FK_ProjetFonctionnalite" FromRole="Projet" ToRole="Fonctionnalite" />
+        </EntityType>
+        <Association Name="FK_ProjetFonctionnalite">
+          <End Type="SpecflowDb.Projet" Role="Projet" Multiplicity="1" />
+          <End Type="SpecflowDb.Fonctionnalite" Role="Fonctionnalite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Fonctionnalite">
+              <PropertyRef Name="ProjetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
+        <Alias Key="Model" Value="SpecflowDb" />
+        <Alias Key="Target" Value="SpecflowDb.Store" />
+        <EntityContainerMapping CdmEntityContainer="SpecflowEntities" StorageEntityContainer="SpecflowDbStoreContainer">
+          <EntitySetMapping Name="Etapes">
+            <EntityTypeMapping TypeName="SpecflowDb.Etape">
+              <MappingFragment StoreEntitySet="Etapes">
+                <ScalarProperty Name="EtapeIndex" ColumnName="EtapeIndex" />
+                <ScalarProperty Name="Table_Id" ColumnName="Table_Id" />
+                <ScalarProperty Name="Nom" ColumnName="Nom" />
+                <ScalarProperty Name="ScenarioOutlineId" ColumnName="ScenarioOutlineId" />
+                <ScalarProperty Name="ScenarioId" ColumnName="ScenarioId" />
+                <ScalarProperty Name="DocString" ColumnName="DocString" />
+                <ScalarProperty Name="NativeKeyword" ColumnName="NativeKeyword" />
+                <ScalarProperty Name="Keyword" ColumnName="Keyword" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Fonctionnalites">
+            <EntityTypeMapping TypeName="SpecflowDb.Fonctionnalite">
+              <MappingFragment StoreEntitySet="Fonctionnalites">
+                <ScalarProperty Name="ProjetId" ColumnName="ProjetId" />
+                <ScalarProperty Name="TestResult" ColumnName="TestResult" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Nom" ColumnName="Nom" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Scenarios">
+            <EntityTypeMapping TypeName="SpecflowDb.Scenario">
+              <MappingFragment StoreEntitySet="Scenarios">
+                <ScalarProperty Name="Fonctionnalite1_Id" ColumnName="Fonctionnalite1_Id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Nom" ColumnName="Nom" />
+                <ScalarProperty Name="FonctionnaliteId" ColumnName="FonctionnaliteId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableColonnes">
+            <EntityTypeMapping TypeName="SpecflowDb.TableColonne">
+              <MappingFragment StoreEntitySet="TableColonnes">
+                <ScalarProperty Name="ColIndex" ColumnName="ColIndex" />
+                <ScalarProperty Name="TableRowId" ColumnName="TableRowId" />
+                <ScalarProperty Name="Valeur" ColumnName="Valeur" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TableRows">
+            <EntityTypeMapping TypeName="SpecflowDb.TableRow">
+              <MappingFragment StoreEntitySet="TableRows">
+                <ScalarProperty Name="RowIndex" ColumnName="RowIndex" />
+                <ScalarProperty Name="TableHeader_Id" ColumnName="TableHeader_Id" />
+                <ScalarProperty Name="TableId" ColumnName="TableId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tables">
+            <EntityTypeMapping TypeName="SpecflowDb.Table">
+              <MappingFragment StoreEntitySet="Tables">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tags">
+            <EntityTypeMapping TypeName="SpecflowDb.Tag">
+              <MappingFragment StoreEntitySet="Tags">
+                <ScalarProperty Name="FonctionnaliteId" ColumnName="FonctionnaliteId" />
+                <ScalarProperty Name="ScenarioId" ColumnName="ScenarioId" />
+                <ScalarProperty Name="TagName" ColumnName="TagName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TestInfoes">
+            <EntityTypeMapping TypeName="SpecflowDb.TestInfo">
+              <MappingFragment StoreEntitySet="TestInfoes">
+                <ScalarProperty Name="Scenario_Id" ColumnName="Scenario_Id" />
+                <ScalarProperty Name="ErrorStacktrace" ColumnName="ErrorStacktrace" />
+                <ScalarProperty Name="ErrorMessage" ColumnName="ErrorMessage" />
+                <ScalarProperty Name="ConsoleOutput" ColumnName="ConsoleOutput" />
+                <ScalarProperty Name="Duree" ColumnName="Duree" />
+                <ScalarProperty Name="DateEnd" ColumnName="DateEnd" />
+                <ScalarProperty Name="DateStart" ColumnName="DateStart" />
+                <ScalarProperty Name="Result" ColumnName="Result" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Projets">
+            <EntityTypeMapping TypeName="SpecflowDb.Projet">
+              <MappingFragment StoreEntitySet="Projets">
+                <ScalarProperty Name="PathToTestSettings" ColumnName="PathToTestSettings" />
+                <ScalarProperty Name="PathToTestDll" ColumnName="PathToTestDll" />
+                <ScalarProperty Name="PathToFeatures" ColumnName="PathToFeatures" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="Nom" ColumnName="Nom" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Aucun" />
+        <DesignerProperty Name="ProcessDependentTemplatesOnSave" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

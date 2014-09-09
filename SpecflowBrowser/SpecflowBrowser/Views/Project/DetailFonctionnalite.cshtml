@@ -1,0 +1,187 @@
+﻿@model BL.Fonctionnalite
+
+<div>
+    <h2>
+        @{
+            string resultFeature = string.Empty; ;
+            string badgeTitleFeature = string.Empty;
+            string badgeGlyphiconFeature = string.Empty;
+
+            switch (Model.TestResult)
+            {
+                case "Passed":
+                    resultFeature = "success";
+                    badgeGlyphiconFeature = "glyphicon-ok";
+                    badgeTitleFeature = "Test passé avec succès";
+                    break;
+                case "Failed":
+                    resultFeature = "danger";
+                    badgeGlyphiconFeature = "glyphicon-remove";
+                    badgeTitleFeature = "Test en échec";
+                    break;
+                case "Inconclusive":
+                    resultFeature = "warning";
+                    badgeGlyphiconFeature = "glyphicon-warning-sign";
+                    badgeTitleFeature = "Aucune information sur le test";
+                    break;
+                case "NoTest":
+                    resultFeature = "default";
+                    break;
+            }
+            if (resultFeature != "default")
+            {
+                <span class="badge alert-@resultFeature" title="@badgeTitleFeature">
+                    <span class="glyphicon @badgeGlyphiconFeature"></span>
+                </span>
+            }
+        }
+        @Model.Nom
+    </h2>
+</div>
+@{
+    if (Model.ScenarioContext.Any())
+    {
+        var scenario = Model.ScenarioContext.First();
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Contexte :</strong> @scenario.Nom
+                @foreach (var tag in scenario.Tags.OrderBy(t => t.TagName))
+                {
+                    <span class="tag"><span class="glyphicon glyphicon-tag"></span> @tag.TagName</span>
+                }
+            </div>
+            <div class="panel-body">
+                @foreach (var step in scenario.Etapes.OrderBy(e => e.EtapeIndex))
+                {
+                    if (step.Keyword == "Given" ||
+                    step.Keyword == "When")
+                    {
+                        <div style="height: 15px;"></div>
+                    }
+                    <div>
+                        <span style="font-weight: bold; color: blue">@step.NativeKeyword</span>
+                        @step.Nom
+                    </div>
+                    if (step.Table != null)
+                    {
+                        <table class="table table-condensed table-bordered">
+                            <tr>
+                                @foreach (var row in step.Table.TableHeader.OrderBy(h => h.RowIndex))
+                                {
+                                    foreach (var col in row.TableColonnes.OrderBy(h => h.ColIndex))
+                                    {
+                                        <th>
+                                            @col.Valeur
+                                        </th>
+                                    }
+                                }
+                            </tr>
+                            @foreach (var row in step.Table.TableRows.OrderBy(h => h.RowIndex))
+                            {
+                                <tr>
+                                    @foreach (var col in row.TableColonnes.OrderBy(h => h.ColIndex))
+                                    {
+                                        <td style="color: red; font-style: italic; ">@col.Valeur</td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    }
+                }
+            </div>
+        </div>
+    }
+
+    foreach (var scenario in Model.Scenarios.OrderBy(f => f.Nom))
+    {
+        string result = "default";
+        string badgeTitle = string.Empty;
+        string badgeGlyphicon = string.Empty;
+        if (scenario.TestInfos.Any())
+        {
+            var testResult = scenario.TestInfos.First();
+            switch (testResult.Result)
+            {
+                case "Passed":
+                    result = "success";
+                    badgeGlyphicon = "glyphicon-ok";
+                    badgeTitle = "Test passé avec succès";
+                    break;
+                case "Failed":
+                    result = "danger";
+                    badgeGlyphicon = "glyphicon-remove";
+                    badgeTitle = "Erreur : " + testResult.ErrorMessage;
+                    break;
+                case "Inconclusive":
+                    result = "warning";
+                    badgeGlyphiconFeature = "glyphicon-warning-sign";
+                    badgeTitle = "Aucune information sur le test";
+                    break;
+            }
+        }
+
+        <div class="panel panel-@result">
+            <div class="panel-heading">
+                <strong>Scénario :</strong> @scenario.Nom
+                @if (result != "default")
+                {
+                    <span class="badge alert-@result" title="@badgeTitle" data-scenarioid="@scenario.Id" style="cursor: pointer">
+                        <span class="glyphicon @badgeGlyphicon"></span>
+                    </span>
+                }
+                @foreach (var tag in scenario.Tags.OrderBy(t => t.TagName))
+                {
+                    <span class="tag"><span class="glyphicon glyphicon-tag"></span> @tag.TagName</span>
+                }
+            </div>
+            <div class="panel-body">
+                @foreach (var step in scenario.Etapes.OrderBy(e => e.EtapeIndex))
+                {
+                    if (step.Keyword == "Given" ||
+                    step.Keyword == "When")
+                    {
+                        <div style="height: 15px;"></div>
+                    }
+                    <div>
+                        <span style="font-weight: bold; color: blue">@step.NativeKeyword</span>
+                        @step.Nom
+                    </div>
+                    if (step.Table != null)
+                    {
+                        <table class="table table-condensed table-bordered">
+                            <tr>
+                                @foreach (var row in step.Table.TableHeader.OrderBy(h => h.RowIndex))
+                                {
+                                    foreach (var col in row.TableColonnes.OrderBy(h => h.ColIndex))
+                                    {
+                                        <th>
+                                            @col.Valeur
+                                        </th>
+                                    }
+                                }
+                            </tr>
+                            @foreach (var row in step.Table.TableRows.OrderBy(h => h.RowIndex))
+                            {
+                                <tr>
+                                    @foreach (var col in row.TableColonnes.OrderBy(h => h.ColIndex))
+                                    {
+                                        <td style="color: red; font-style: italic; ">@col.Valeur</td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    }
+                }
+            </div>
+        </div>
+    }
+}
+<script type="text/javascript">
+    $('[data-scenarioId]').click(function () {
+        var id = $(this).attr("data-scenarioId");
+        $.get("@Url.Action("DetailScenario")?scenarioId=" + id, function (data) {
+            $("#modal-body").html(data);
+            $("#myModal").modal();
+        });
+    });
+</script>

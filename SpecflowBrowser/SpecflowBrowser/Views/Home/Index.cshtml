@@ -1,0 +1,38 @@
+﻿@model List<SpecflowBrowser.Models.ViewProjects>
+
+@{
+    ViewBag.Title = "Projets";
+    Layout = "~/Views/Shared/_WebPage.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="col-xs-12">
+        <h2>Projets recensés</h2>
+
+        <div class="row">
+            <ul class="list-group">
+                @foreach (var projet in Model.OrderBy(p => p.NomProjet))
+                {
+                    <li class="list-group-item">
+                        @Html.RouteLink(projet.NomProjet + " " + projet.VersionProjet, "Projets",
+                                        new { nomProjet = projet.NomProjet, versionProjet = projet.VersionProjet })
+                        <span class="sparkline">@string.Join(",",projet.LstTestResults.ToArray())</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section script{
+    <script type="text/javascript">
+        $(function () {
+            $(".sparkline").each(function () {
+                $(this).sparkline('html', {
+                    type: 'bar',
+                    stackedBarColor: ["#bf0000", "#bf5f00", "#00bf00"]
+                })
+            });
+        });
+    </script>
+}

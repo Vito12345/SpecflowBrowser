@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>@ViewBag.Title - SpecflowBrowser</title>
+    @System.Web.Optimization.Styles.Render("~/bundles/css")
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        @System.Web.Optimization.Scripts.Render("~/bundles/ie8")
+    <![endif]-->
+</head>
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a href="/"><span class="navbar-brand">Specflow Browser</span></a>
+            </div>
+        </div><!-- /.container-fluid -->
+    </nav>
+    @RenderBody()
+
+    @System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+    @RenderSection("script")
+</body>
+</html>

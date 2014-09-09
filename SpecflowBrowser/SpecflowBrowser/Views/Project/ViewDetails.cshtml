@@ -1,0 +1,265 @@
+﻿@model DTO.PickleResult
+
+@{
+    ViewBag.Title = Model.Configuration.SutName + " - " + Model.Configuration.SutVersion;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title - SpecflowBrowser</title>
+    <link rel="icon" href="~/Images/favicon.ico" type="image/x-icon">
+    @System.Web.Optimization.Styles.Render("~/bundles/css")
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        @System.Web.Optimization.Scripts.Render("~/bundles/ie8")
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <![endif]-->
+</head>
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <div>
+                    <a href="/"><span class="navbar-brand">Specflow Browser</span></a>
+                    <span class="navbar-brand-minus">=> @Model.Configuration.SutName @Model.Configuration.SutVersion</span>
+                </div>
+            </div>
+            <ul class="nav navbar-nav pull-right">
+                <li>
+                    <a href="/"><img src="~/Images/logo_bytel.png" alt="Bytel" id="logoBytel" /></a>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-right" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Mot-clé ou @(" @")tag" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                </div>
+            </form>
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="row">
+        <nav class="col-xs-3 bs-docs-sidebar">
+            <ul id="sidebar" class="nav nav-stacked fixed col-xs-4">
+                @{
+                    int i = 0;
+                    foreach (var feature in Model.Features)
+                    {
+                        <li>
+                            @{
+                        string resultFeature;
+                        string badgeTitleFeature;
+                        string badgeGlyphiconFeature;
+
+                        if (feature.Result.WasExecuted)
+                        {
+                            if (feature.Result.WasSuccessful)
+                            {
+                                resultFeature = "success";
+                                badgeGlyphiconFeature = "glyphicon-ok";
+                                badgeTitleFeature = "Test passé avec succès";
+                            }
+                            else
+                            {
+                                resultFeature = "danger";
+                                badgeGlyphiconFeature = "glyphicon-remove";
+                                badgeTitleFeature = "Test en échec";
+                            }
+                        }
+                        else
+                        {
+                            resultFeature = "warning";
+                            badgeGlyphiconFeature = "glyphicon-warning-sign";
+                            badgeTitleFeature = "Aucune information sur le test";
+                        }
+                            }<a href="#section@(i)">
+                                <span class="badge alert-@resultFeature" title="@badgeTitleFeature">
+                                    <span class="glyphicon @badgeGlyphiconFeature"></span>
+                                </span>
+                                @feature.Feature.Name
+                            </a>
+                            <ul class="nav nav-stacked">
+                                @{
+                        int j = 0;
+                        foreach (var scenario in feature.Feature.FeatureElements)
+                        {
+                            string result;
+                            string badgeTitle;
+                            string badgeGlyphicon;
+
+                            if (scenario.Result.WasExecuted)
+                            {
+                                if (scenario.Result.WasSuccessful)
+                                {
+                                    result = "success";
+                                    badgeGlyphicon = "glyphicon-ok";
+                                    badgeTitle = "Test passé avec succès";
+                                }
+                                else
+                                {
+                                    result = "danger";
+                                    badgeGlyphicon = "glyphicon-remove";
+                                    badgeTitle = "Test en échec";
+                                }
+                            }
+                            else
+                            {
+                                result = "warning";
+                                badgeGlyphicon = "glyphicon-warning-sign";
+                                badgeTitle = "Aucune information sur le test";
+                            }
+
+                            <li>
+                                <a href="#section@(i)_@(j)">
+                                    <span class="badge alert-@result" title="@badgeTitle">
+                                        <span class="glyphicon @badgeGlyphicon"></span>
+                                    </span>
+                                    @scenario.Name
+                                </a>
+                            </li>
+                            j++;
+                        }
+                                }
+                            </ul>
+                        </li>
+                        i++;
+                    }}
+            </ul>
+        </nav>
+        <div class="col-xs-9">
+            @{
+                i = 0;
+                foreach (var feature in Model.Features)
+                {
+                    <div id="section@(i)">
+                        <h2>
+                            @{
+                    string resultFeature;
+                    string badgeTitleFeature;
+                    string badgeGlyphiconFeature;
+
+                    if (feature.Result.WasExecuted)
+                    {
+                        if (feature.Result.WasSuccessful)
+                        {
+                            resultFeature = "success";
+                            badgeGlyphiconFeature = "glyphicon-ok";
+                            badgeTitleFeature = "Test passé avec succès";
+                        }
+                        else
+                        {
+                            resultFeature = "danger";
+                            badgeGlyphiconFeature = "glyphicon-remove";
+                            badgeTitleFeature = "Test en échec";
+                        }
+                    }
+                    else
+                    {
+                        resultFeature = "warning";
+                        badgeGlyphiconFeature = "glyphicon-warning-sign";
+                        badgeTitleFeature = "Aucune information sur le test";
+                    }
+                            }
+                            <span class="badge alert-@resultFeature" title="@badgeTitleFeature">
+                                <span class="glyphicon @badgeGlyphiconFeature"></span>
+                            </span>
+                            @feature.Feature.Name
+                        </h2>
+                    </div>
+
+                    int j = 0;
+                    foreach (var scenario in feature.Feature.FeatureElements)
+                    {
+                        string result;
+                        string badgeTitle;
+                        string badgeGlyphicon;
+
+                        if (scenario.Result.WasExecuted)
+                        {
+                            if (scenario.Result.WasSuccessful)
+                            {
+                                result = "success";
+                                badgeGlyphicon = "glyphicon-ok";
+                                badgeTitle = "Test passé avec succès";
+                            }
+                            else
+                            {
+                                result = "danger";
+                                badgeGlyphicon = "glyphicon-remove";
+                                badgeTitle = "Test en échec";
+                            }
+                        }
+                        else
+                        {
+                            result = "warning";
+                            badgeGlyphicon = "glyphicon-warning-sign";
+                            badgeTitle = "Aucune information sur le test";
+                        }
+
+                        <div class="panel panel-@result">
+                            <div id="section@(i)_@(j)" class="panel-heading">
+                                @scenario.Name
+                                <span class="badge alert-@result" title="@badgeTitle">
+                                    <span class="glyphicon @badgeGlyphicon"></span>
+                                </span>
+                            </div>
+                            <div class="panel-body">
+                                @foreach (var step in scenario.Steps)
+                                {
+                                    if (step.Keyword == SpecflowBrowser.Model.Keyword.Given ||
+                                    step.Keyword == SpecflowBrowser.Model.Keyword.When)
+                                    {
+                                        <div style="height: 15px;"></div>
+                                    }
+                                    <div>
+                                        <span style="font-weight: bold; color: blue">@step.NativeKeyword</span>
+                                        @step.Name
+                                    </div>
+                                    if (step.TableArgument != null)
+                                    {
+                                        <table class="table table-condensed table-bordered">
+                                            <tr>
+                                                @foreach (var row in step.TableArgument.HeaderRow)
+                                                {
+                                                    <th>
+                                                        @row
+                                                    </th>
+                                                }
+                                            </tr>
+                                            @foreach (var row in step.TableArgument.DataRows)
+                                            {
+                                                <tr>
+                                                    @foreach (var col in row)
+                                                    {
+                                                        <td style="color: red; font-style: italic; ">@col</td>
+                                                    }
+                                                </tr>
+                                            }
+                                        </table>
+                                    }
+                                }
+                            </div>
+                        </div>
+                                j++;
+                    }
+                    i++;
+                }
+            }
+        </div>
+    </div>
+    @System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+    <script type="text/javascript">
+        $('body').scrollspy({
+            target: '.bs-docs-sidebar',
+            offset: 40
+        });
+    </script>
+</body>
+</html>

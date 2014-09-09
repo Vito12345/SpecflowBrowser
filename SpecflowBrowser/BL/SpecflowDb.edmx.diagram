@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6ad683b6b74e4ca388faec46ebd3dc89" Name="Diagram1" ZoomLevel="74" >
+        <EntityTypeShape EntityType="SpecflowDb.Etape" Width="1.5" PointX="7.5" PointY="4.625" />
+        <EntityTypeShape EntityType="SpecflowDb.Fonctionnalite" Width="1.5" PointX="3" PointY="4.75" />
+        <EntityTypeShape EntityType="SpecflowDb.Scenario" Width="1.5" PointX="5.25" PointY="4.75" />
+        <EntityTypeShape EntityType="SpecflowDb.TableColonne" Width="1.5" PointX="9.75" PointY="1.25" />
+        <EntityTypeShape EntityType="SpecflowDb.TableRow" Width="1.5" PointX="7.5" PointY="1" />
+        <EntityTypeShape EntityType="SpecflowDb.Table" Width="1.5" PointX="5.25" PointY="1.25" />
+        <EntityTypeShape EntityType="SpecflowDb.Tag" Width="1.5" PointX="10.5" PointY="5.125" />
+        <EntityTypeShape EntityType="SpecflowDb.TestInfo" Width="1.5" PointX="7.5" PointY="11.5" />
+        <AssociationConnector Association="SpecflowDb.FK_EtapeTable" />
+        <AssociationConnector Association="SpecflowDb.FK_ScenarioEtape" />
+        <AssociationConnector Association="SpecflowDb.FK_FonctionnaliteScenario" />
+        <AssociationConnector Association="SpecflowDb.FK_FonctionnaliteScenario1" />
+        <AssociationConnector Association="SpecflowDb.FK_FonctionnaliteTag" />
+        <AssociationConnector Association="SpecflowDb.FK_ScenarioTag" />
+        <AssociationConnector Association="SpecflowDb.FK_ScenarioTestInfo" />
+        <AssociationConnector Association="SpecflowDb.FK_TableRowTableColonne" />
+        <AssociationConnector Association="SpecflowDb.FK_TableTableRow" />
+        <AssociationConnector Association="SpecflowDb.FK_TableTableRow1" />
+        <EntityTypeShape EntityType="SpecflowDb.Projet" Width="1.5" PointX="0.75" PointY="5" />
+        <AssociationConnector Association="SpecflowDb.FK_ProjetFonctionnalite" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,47 @@
+﻿@model BL.Scenario
+@{
+    BL.TestInfo testInfo = Model.TestInfos.First();
+}
+
+<div style="height: 700px; overflow: auto">
+    <div class="row">
+        <div class="col-xs-4">
+            <span>Etat :</span>
+            @switch (testInfo.Result)
+            {
+                case "NoTest":
+                    <span class="badge">Non testé</span>
+                    break;
+                case "Passed":
+                <span class="badge alert-success">Réussi</span>
+                    break;
+                case "Failed":
+                <span class="badge alert-danger">&Eacute;chec</span>
+                    break;
+                case "Inconclusive":
+                <span class="badge alert-warning">Non concluant</span>
+                    break;
+            }
+
+        </div>
+        <div class="col-xs-4">
+            
+        </div>
+        <div class="col-xs-4">
+            Durée : @testInfo.Duree
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6">
+            <h3>Message d'erreur</h3>
+            <pre>@testInfo.ErrorMessage</pre>
+
+            <h3>Stacktrace</h3>
+            <pre>@testInfo.ErrorStacktrace</pre>
+        </div>
+        <div class="col-xs-6">
+            <h3>Sortie console</h3>
+            <pre>@testInfo.ConsoleOutput</pre>
+        </div>
+    </div>
+</div>
